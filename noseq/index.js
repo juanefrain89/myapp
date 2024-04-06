@@ -31,7 +31,7 @@ app.get('/connecton', (req, res) => {
         return;
       }
 
- const query = `SELECT * FROM usuarios_roles
+const query = `SELECT * FROM usuarios_roles`;
  con.query(query, (err, result) => {
         if (err) {
           console.error("Error al ejecutar la consulta:", err);
