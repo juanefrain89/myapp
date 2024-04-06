@@ -24,8 +24,12 @@ app.use(mysqlConexion(mysql, dbConfig, "single"));
 
 
 app.get('/connection', (req, res) => {
-  // Simplemente responde que la conexión fue exitosa
-  res.json({ message: 'La conexión a la base de datos fue exitosa' });
+   req.getConnection((err, con) => {
+      if (err) {
+        console.error("Error al conectar a la base de datos:", err);
+        res.status(500).send("Error al conectar a la base de datos");
+        return;
+      }
 });
 
 
