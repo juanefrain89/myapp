@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.js", // Este es tu script de desarrollo
+    "dev": "node index.js", // Este es tu script de desarrollo
     "build": "echo \"No hay un proceso de construcción definido\"" // Este es un ejemplo de script de construcción básico
   },
   "author": "",
