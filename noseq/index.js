@@ -30,7 +30,8 @@ app.get('/connecton', (req, res) => {
         res.status(500).send("Error al conectar a la base de datos");
         return;
       }
-});
+})
+})
 
 
 app.get("/", (req, res) => {
