@@ -23,7 +23,7 @@ const dbConfig = {
 app.use(mysqlConexion(mysql, dbConfig, "single"));
 
 
-app.get('/connection', (req, res) => {
+app.get('/connecton', (req, res) => {
    req.getConnection((err, con) => {
       if (err) {
         console.error("Error al conectar a la base de datos:", err);
