@@ -30,8 +30,7 @@ app.get('/connecton', (req, res) => {
         res.status(500).send("Error al conectar a la base de datos");
         return;
       }
-
-const query = `SELECT * FROM usuarios_roles`;
+  const query = `SELECT * FROM usuarios_roles WHERE correo = 'razoj140@gmail.com'`;
  con.query(query, (err, result) => {
         if (err) {
           console.error("Error al ejecutar la consulta:", err);
