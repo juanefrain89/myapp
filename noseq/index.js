@@ -29,9 +29,28 @@ app.get('/connecton', (req, res) => {
         console.error("Error al conectar a la base de datos:", err);
         res.status(500).send("Error al conectar a la base de datos");
         return;
-      }else{
-          res.send("Hola");
-      } 
+      }
+
+ const query = `SELECT * FROM usuarios_roles
+ con.query(query, (err, result) => {
+        if (err) {
+          console.error("Error al ejecutar la consulta:", err);
+          res.status(500).send("Error al ejecutar la consulta en la base de datos");
+          return;
+        }
+      
+        if (result.length === 0) {
+          console.log("no encontrado");
+        } else {
+          const id = result[0].id;
+          const rol = result[0].rol;
+          const token = jwt.sign({ correo: correo }, "el botas", {expiresIn:"10m"}); // Corregido aquí
+          console.log(id);
+          res.status(200).json({token, id,rol});
+          console.log("correcto");
+        }
+      });
+     
 })
 })
 
