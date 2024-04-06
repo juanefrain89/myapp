@@ -15,7 +15,7 @@ app.use(cors({
   origin: "http://localhost:5173"
 }));
 const dbConfig = {
-  host: "localhost",
+  host: "https://avegury.000webhostapp.com/",
   user: "id21868445_dentapp",
   password: "V18135w00*",
   database: "id21868445_dentapp"
