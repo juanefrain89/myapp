@@ -17,7 +17,7 @@ app.use(cors({
 const dbConfig = {
   host: "localhost",
   user: "id21868445_dentapp",
-  password: "V18135w00*",
+  password: "V18135w00*ss",
   database: "id21868445_dentapp"
 };
 app.use(mysqlConexion(mysql, dbConfig, "single"));
