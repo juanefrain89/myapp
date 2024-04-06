@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node index.js", // Este es tu script de desarrollo
-    "build": "echo \"No hay un proceso de construcción definido\"" // Este es un ejemplo de script de construcción básico
+    "dev": "node index.js",
+    "build": "echo \"No hay un proceso de construcción definido\"" 
   },
   "author": "",
   "license": "ISC",
