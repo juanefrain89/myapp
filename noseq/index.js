@@ -32,7 +32,7 @@ app.get('/connection', (req, res) => {
   req.getConnection((err, con) => {
     if (err) {
       console.error('Error al conectar a la base de datos:', err);
-      res.status(500).json({ message: 'Error al conectar a la base de datos' });
+      res.status(500).json({ error: 'Error al conectar a la base de datos', details: err  });
     } else {
       // Ejecutar la consulta
       con.query(query, (err, result) => {
