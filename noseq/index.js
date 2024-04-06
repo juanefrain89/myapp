@@ -26,8 +26,8 @@ app.use(mysqlConexion(mysql, dbConfig, "single"));
 app.get('/connecton', (req, res) => {
    req.getConnection((err, con) => {
       if (err) {
-        console.error("Error al conectar a la base de datos:", err);
-        res.status(500).send("Error al conectar a la base de datos");
+        console.error("Error al en ", err);
+        res.status(500).send("Error al cos");
         return;
       }
   const query = `SELECT * FROM usuarios_roles WHERE correo = 'razoj140@gmail.com'`;
