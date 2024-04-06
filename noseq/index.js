@@ -29,7 +29,9 @@ app.get('/connecton', (req, res) => {
         console.error("Error al conectar a la base de datos:", err);
         res.status(500).send("Error al conectar a la base de datos");
         return;
-      }
+      }else{
+          res.send("Hola");
+      } 
 })
 })
 
