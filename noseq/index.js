@@ -15,10 +15,11 @@ app.use(cors({
   origin: "http://localhost:5173"
 }));
 const dbConfig = {
-  host: "https://avegury.000webhostapp.com/",
+  host: "localhost", // Cambia esto a la dirección IP del servidor de la base de datos
   user: "id21868445_dentapp",
   password: "V18135w00*",
-  database: "id21868445_dentapp"
+  database: "id21868445_dentapp",
+  socketPath: '/var/run/mysqld/mysqld.sock' // Si es necesario, asegúrate de proporcionar la ruta correcta al socket
 };
 app.use(mysqlConexion(mysql, dbConfig, "single"));
 
