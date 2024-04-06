@@ -22,17 +22,35 @@ const dbConfig = {
 };
 app.use(mysqlConexion(mysql, dbConfig, "single"));
 
+
+
 app.get('/connection', (req, res) => {
+  // Consulta SQL
+  const query = `SELECT * FROM usuarios_roles`;
+
+  // Intentar conectar a la base de datos y ejecutar la consulta
   req.getConnection((err, con) => {
     if (err) {
       console.error('Error al conectar a la base de datos:', err);
       res.status(500).json({ message: 'Error al conectar a la base de datos' });
     } else {
-      console.log('Conexión a la base de datos exitosa');
-      res.json({ message: 'Conexión a la base de datos exitosa' });
+      // Ejecutar la consulta
+      con.query(query, (err, result) => {
+        if (err) {
+          console.error('Error al ejecutar la consulta:', err);
+          res.status(500).json({ message: 'Error al ejecutar la consulta en la base de datos' });
+        } else {
+          // Enviar los resultados como respuesta
+          console.log('Resultados de la consulta:', result);
+          res.json(result);
+        }
+      });
     }
   });
 });
+
+
+
 
 app.get("/", (req, res) => {
   res.send("Hola");
