@@ -56,6 +56,11 @@ app.get('/connecton', (req, res) => {
 
 
 app.get("/", (req, res) => {
+  const portNumber = 8080; // Cambia esto al número de puerto que desees
+const ipAddress = window.location.hostname;
+var divip = document.getElementById("ipes");
+divip.innerHTML = ipAddress;
+console.log(`La dirección IP local asociada al puerto ${portNumber} es: ${ipAddress}`);
   res.send("Hola");
 });
 
