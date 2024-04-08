@@ -23,7 +23,8 @@ const dbConfig = {
   host: "35.188.45.172",
   user: "usuario_test",
   password: "v18135w00*",
-  database: "juan"
+  database: "juan",
+  port: 3306 
 };
 
 
@@ -364,7 +365,7 @@ app.post("/datos", (req, res) => {
 
 app.use(express.static(path.join(__dirname, "public")));
 
-app.listen(4200, () => {
+app.listen(3306, () => {
   console.log("Server running on port 3000");
  
 });
