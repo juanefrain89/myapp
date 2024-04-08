@@ -39,7 +39,7 @@ app.use(mysqlConexion(mysql, dbConfig, "single"));
 
 
 
-app.post("/peticiones", (req, res) => {
+app.get("/peticiones", (req, res) => {
 
   const { correo, password } = req.body;
   
