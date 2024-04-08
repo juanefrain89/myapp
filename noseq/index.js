@@ -20,6 +20,10 @@ const dbConfig = {
   database: "juan"
 };
 
+
+
+
+
 const connection = mysql.createConnection(dbConfig);
 connection.connect(err => {
   if (err) {
@@ -29,7 +33,51 @@ connection.connect(err => {
   console.log("Conectado a la base de datos");
 });
 
+
+
 app.use(mysqlConexion(mysql, dbConfig, "single"));
+
+
+
+app.post("/peticiones", (req, res) => {
+
+  const { correo, password } = req.body;
+  
+  console.log("Correo recibido:", correo);
+  
+  try {
+    const query = `SELECT * FROM usuarios_roles`;
+  
+    console.log(query);
+  
+    req.getConnection((err, con) => {
+      if (err) {
+        console.error("Error al conectar a la base de datos:", err);
+        res.status(500).send("Error al conectar a la base de datos");
+        return;
+      }
+
+      con.query(query, (err, result) => {
+        if (err) {
+          console.error("Error al ejecutar la consulta:", err);
+          res.status(500).send("Error al ejecutar la consulta");
+          return;
+        }
+        
+        console.log("Resultados de la consulta:", result);
+        
+        // Aquí puedes hacer algo con los resultados, como enviarlos en la respuesta
+        res.send(result);
+      });
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Error interno del servidor");
+  }
+});
+
+
+
 
 app.post("/login", (req, res) => {
 
