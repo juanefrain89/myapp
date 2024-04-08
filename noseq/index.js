@@ -21,7 +21,7 @@ app.use(cors({
 
 const dbConfig = {
   host: "35.188.45.172",
-  user: "root",
+  user: "usuario_test",
   password: "v18135w00*",
   database: "juan"
 };
