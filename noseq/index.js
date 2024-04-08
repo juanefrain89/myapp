@@ -18,7 +18,7 @@ const dbConfig = {
   host: "35.188.45.172", // Cambia esto a la dirección IP del servidor de la base de datos
   user: "root",
   password: "V18135w00*",
-  database: "juan",
+  database: "juanitopitu2",
   
 };
 app.use(mysqlConexion(mysql, dbConfig, "single"));
