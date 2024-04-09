@@ -83,7 +83,7 @@ app.post("/login", (req, res) => {
 
 const  {correo}  = req.body;
 const  {password}  = req.body;
-
+console.log("sssa")
   console.log("Correo recibido:", correo);
   try {
     const query = `SELECT * FROM usuarios_roles WHERE correo = '${correo}' and password ='${password}' `;
