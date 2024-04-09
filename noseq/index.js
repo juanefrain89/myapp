@@ -245,7 +245,7 @@ app.post("/datos", (req, res) => {
       app.post("/registrar", (req, res) => {
 
         const { password, correo, tratamiento, numero } = req.body;
-        
+        console.log(correo)
           try {
             const query = `INSERT INTO clientesdentistas (id_dentista, correo, tratamiento, numero,password) 
             VALUES (1, '${correo}', '${tratamiento}', '${numero}', '${password}')`;
