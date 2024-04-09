@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors());
 app.use(cors({
-  origin: "http://localhost:5173"
+  origin:"https://dentapp.vercel.app"
 }));
 
 
