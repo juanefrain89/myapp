@@ -20,10 +20,10 @@ app.use(cors({
 
 
 const dbConfig = {
-  host: " sql106.infinityfree.com",
-  user: " if0_36325780",
-  password: "BPfr0i1cdhOtCxU",
-  database: "if0_36325780_juan",
+  host: "35.188.45.172",
+  user: "root",
+  password: "v18135w00*",
+  database: "juan",
   port: 3306 
 };
 
