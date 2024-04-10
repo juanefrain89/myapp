@@ -17,7 +17,7 @@ app.use(cors());
 app.use(cors({
   origin:"https://ultimo-5mz4.onrender.com"
 
-"
+
 }));
 
 
