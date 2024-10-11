@@ -1,3 +1,4 @@
+
 const express = require("express");
 const app = express();
 const jwt = require('jsonwebtoken');
@@ -5,83 +6,368 @@ const mysql = require("mysql");
 const mysqlConexion = require("express-myconnection");
 const path = require("path");
 const cors = require("cors");
-const multer = require("multer");
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+
 const bodyParser = require("body-parser");
 
+app.set(4200);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(cors());
 app.use(cors({
-  origin: "http://localhost:5173"
+  origin:"https://ultimo-5mz4.onrender.com"
+
+
 }));
 
-const dbConfig = {
-  host: "198.59.144.133",
-  user: "mavahost_juan",
-  password: "juanito18*#.",
-  database: "mavahost_omar"
-};
 
+const dbConfig = {
+  host: "bx3vv1mm1wwgct4dnagv-mysql.services.clever-cloud.com",
+  user: "u4qtpdntbug6qfgq",
+  password: "qmpGUlXyfQhfE9w18H9j",
+  database: "bx3vv1mm1wwgct4dnagv",
+  port: 3306 
+};
 
 
 app.use(mysqlConexion(mysql, dbConfig, "single"));
 
-app.get("/", (req, res) => {
-  const query = `SELECT * FROM patrullas`;
+
+
+  
+
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
+app.get("/peticiones", (req, res) => {
+
+  const { correo, password } = req.body;
+  
+  console.log("Correo recibido:", correo);
   
   try {
+    const query = `SELECT * FROM usuarios_roles`;
+  
+    console.log(query);
+  
     req.getConnection((err, con) => {
       if (err) {
         console.error("Error al conectar a la base de datos:", err);
-        return res.status(500).send("Error al conectar a la base de datos");
+        res.status(500).send("Error al conectar a la base de datos");
+        return;
       }
 
       con.query(query, (err, result) => {
         if (err) {
           console.error("Error al ejecutar la consulta:", err);
-          return res.status(500).send("Error al ejecutar la consulta en la base de datos");
+          res.status(500).send("Error al ejecutar la consulta");
+          return;
         }
         
+        console.log("Resultados de la consulta:", result);
+        
+        // Aquí puedes hacer algo con los resultados, como enviarlos en la respuesta
+        res.send(result);
+      });
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Error interno del servidor");
+  }
+});
+
+
+
+
+
+app.post("/login", (req, res) => {
+
+const  {correo}  = req.body;
+const  {password}  = req.body;
+console.log("sssa")
+  console.log("Correo recibido:", correo);
+  try {
+    const query = `SELECT * FROM usuarios_roles WHERE correo = '${correo}' and password ='${password}' `;
+
+    console.log(query);
+    req.getConnection((err, con) => {
+      if (err) {
+        console.error("Error al conectar a la base de datos:", err);
+        res.status(500).send("Error al conectar a la base de datos");
+        return;
+      }
+
+      con.query(query, (err, result) => {
+        if (err) {
+          console.error("Error al ejecutar la consulta:", err);
+          res.status(500).send("Error al ejecutar la consulta en la base de datos");
+          return;
+        }
+      
         if (result.length === 0) {
-          console.log("No se encontraron resultados.");
-          return res.status(404).send("No se encontraron resultados.");
+          console.log("no encontrado");
         } else {
-          res.status(200).send(result);
+          const id = result[0].id;
+          const rol = result[0].rol;
+          const token = jwt.sign({ correo: correo }, "el botas", {expiresIn:"10m"}); // Corregido aquí
+          console.log(id);
+          res.status(200).json({token, id,rol});
+          console.log("correcto");
         }
       });
     });
   } catch (error) {
-    console.error("Error inesperado:", error);
-    res.status(500).send("Error inesperado");
+    console.error("Error en el servidor:", error);
+    res.status(500).json({ error: "Error en el servidor" });
   }
 });
 
-app.post("/l", upload.single('imagen'), (req, res) => {
-  const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud } = req.body;
-  const imagenBuffer = req.file ? req.file.buffer : null;
 
-  console.log(req.body);
 
-  const sql = 'INSERT INTO patrullas (ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?)';
-  const values = [ubicacion, contacto, unidad, referencias, imagenBuffer, latitud, longitud];
 
-  req.getConnection((err, con) => {
-    if (err) {
-      console.error("Error de conexión a la base de datos:", err);
-      return res.status(500).send('Error de conexión a la base de datos');
+
+app.post("/datos", (req, res) => {
+
+  const  {id}  = req.body;
+  
+    console.log("Correo recibido:", id);
+    try {
+      const query = `SELECT * FROM clientesdentistas WHERE id_dentista = '${id}'`;
+  
+      console.log(query);
+      req.getConnection((err, con) => {
+        if (err) {
+          console.error("Error al conectar a la base de datos:", err);
+          res.status(500).send("Error al conectar a la base de datos");
+          return;
+        }
+  
+        con.query(query, (err, result) => {
+          if (err) {
+            console.error("Error al ejecutar la consulta:", err);
+            res.status(500).send("Error al ejecutar la consulta en la base de datos");
+            return;
+          }
+        
+          if (result.length === 0) {
+            console.log("no encontrado");
+          } else {
+            res.status(200).send(result)
+           
+          }
+        });
+      });
+    } catch (error) {
+      console.error("Error en el servidor:", error);
+      res.status(500).json({ error: "Error en el servidor" });
     }
-
-    con.query(sql, values, (err, result) => {
-      if (err) {
-        console.error("Error al insertar en la base de datos:", err);
-        return res.status(500).send('Error al insertar en la base de datos');
-      }
-      res.status(200).send({ message: 'Registro exitoso', result });
-    });
   });
-});
+  
 
-app.listen(4200, () => {
-  console.log("Server running on port 4200");
+
+
+  app.post("/eliminardatos", (req, res) => {
+
+    const  {id}  = req.body;
+    
+    
+      try {
+        const query = `DELETE FROM clientesdentistas where id_personal  = '${id}'`;
+    
+        console.log(query);
+        req.getConnection((err, con) => {
+          if (err) {
+            console.error("Error al conectar a la base de datos:", err);
+            res.status(500).send("Error al conectar a la base de datos");
+            return;
+          }
+    
+          con.query(query, (err, result) => {
+            if (err) {
+              console.error("Error al ejecutar la consulta:", err);
+              res.status(500).send("Error al ejecutar la consulta en la base de datos");
+              return;
+            }
+          
+            if (result.length === 0) {
+              console.log("no encontrado");
+            } else {
+              res.status(200).send(result)
+             
+            }
+          });
+        });
+      } catch (error) {
+        console.error("Error en el servidor:", error);
+        res.status(500).json({ error: "Error en el servidor" });
+      }
+    });
+
+    app.post("/modificardatos", (req, res) => {
+
+      const  {id}  = req.body;
+      const {correo}=req.body;
+      const {tratamiento, numero}=req.body;
+        console.log("dsdssdsds:", id);
+        try {
+          const query = `update clientesdentistas set correo ='${correo}',numero ='${numero}' ,tratamiento='${tratamiento}'  where id_personal  = '${id}'`;
+      
+          console.log(query);
+          req.getConnection((err, con) => {
+            if (err) {
+              console.error("Error al conectar a la base de datos:", err);
+              res.status(500).send("Error al conectar a la base de datos");
+              return;
+            }
+      
+            con.query(query, (err, result) => {
+              if (err) {
+                console.error("Error al ejecutar la consulta:", err);
+                res.status(500).send("Error al ejecutar la consulta en la base de datos");
+                return;
+              }
+            
+              if (result.length === 0) {
+                console.log("no encontrado");
+              } else {
+                res.status(200).send(result)
+               
+              }
+            });
+          });
+        } catch (error) {
+          console.error("Error en el servidor:", error);
+          res.status(500).json({ error: "Error en el servidor" });
+        }
+      });
+    
+
+
+      app.post("/registrar", (req, res) => {
+
+        const { password, correo, tratamiento, numero } = req.body;
+        console.log(correo)
+          try {
+            const query = `INSERT INTO clientesdentistas (id_dentista, correo, tratamiento, numero,password) 
+            VALUES (1, '${correo}', '${tratamiento}', '${numero}', '${password}')`;
+
+            console.log(query);
+            req.getConnection((err, con) => {
+              if (err) {
+                console.error("Error al conectar a la base de datos:", err);
+                res.status(500).send("Error al conectar a la base de datos");
+                return;
+              }
+        
+              con.query(query, (err, result) => {
+                if (err) {
+                  console.error("Error al ejecutar la consulta:", err);
+                  res.status(500).send("Error al ejecutar la consulta en la base de datos");
+                  return;
+                }
+              
+                if (result.length === 0) {
+                  console.log("no encontrado");
+                } else {
+                  res.status(200).send(result)
+                 
+                }
+              });
+            });
+          } catch (error) {
+            console.error("Error en el servidor:", error);
+            res.status(500).json({ error: "Error en el servidor" });
+          }
+        });
+      
+  
+
+        app.post("/user", (req, res) => {
+
+          const  {id}  = req.body;
+          
+            console.log("Correo recibido:", id);
+            try {
+              const query = `SELECT * FROM usuarios_roles WHERE id = '${id}'`;
+          
+              console.log(query);
+              req.getConnection((err, con) => {
+                if (err) {
+                  console.error("Error al conectar a la base de datos:", err);
+                  res.status(500).send("Error al conectar a la base de datos");
+                  return;
+                }
+          
+                con.query(query, (err, result) => {
+                  if (err) {
+                    console.error("Error al ejecutar la consulta:", err);
+                    res.status(500).send("Error al ejecutar la consulta en la base de datos");
+                    return;
+                  }
+                
+                  if (result.length === 0) {
+                    console.log("no encontrado");
+                  } else {
+                    res.status(200).send(result)
+                   
+                  }
+                });
+              });
+            } catch (error) {
+              console.error("Error en el servidor:", error);
+              res.status(500).json({ error: "Error en el servidor" });
+            }
+          });
+          
+
+          
+        
+
+          app.post("/userdatos", (req, res) => {
+
+            const  {id}  = req.body;
+            const {correo}=req.body;
+            const {password}=req.body;
+              console.log("dsdssdsds:", id);
+              try {
+                const query = `UPDATE usuarios_roles SET correo = '${correo}', password = '${password}' WHERE id = '${id}'`;
+
+                console.log(query);
+                req.getConnection((err, con) => {
+                  if (err) {
+                    console.error("Error al conectar a la base de datos:", err);
+                    res.status(500).send("Error al conectar a la base de datos");
+                    return;
+                  }
+            
+                  con.query(query, (err, result) => {
+                    if (err) {
+                      console.error("Error al ejecutar la consulta:", err);
+                      res.status(500).send("Error al ejecutar la consulta en la base de datos");
+                      return;
+                    }
+                  
+                    if (result.length === 0) {
+                      console.log("no encontrado");
+                    } else {
+                      res.status(200).send(result)
+                     
+                    }
+                  });
+                });
+              } catch (error) {
+                console.error("Error en el servidor:", error);
+                res.status(500).json({ error: "Error en el servidor" });
+              }
+            });
+          
+
+
+
+app.use(express.static(path.join(__dirname, "public")));
+
+app.listen(3306, () => {
+  console.log("Server running on port 3000");
+ 
 });
