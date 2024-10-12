@@ -66,7 +66,8 @@ app.get("/", (req, res) => {
           
           const resultsWithUrls = result.map(item => ({
             ...item,
-            imagen: item.imagen ? `http://localhost:4200/imagenes/${item.imagen}` : null // Agregar la URL de la imagen
+           
+            imagen: item.imagen ? `https://omar-7ebn.onrender.com/imagenes/${item.imagen}` : null // Agregar la URL de la imagen
           }));
           res.status(200).send(resultsWithUrls);
         }
