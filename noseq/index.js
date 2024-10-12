@@ -13,7 +13,7 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({
-  origin: "https://omar-7ebn.onrender.com"
+  origin: "http://localhost:5173"
 }));
 
 const dbConfig = {
@@ -63,8 +63,8 @@ app.post("/l", upload.single('imagen'), (req, res) => {
 
   console.log(req.body);
 
-  const sql = 'INSERT INTO patrullas (ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?)';
-  const values = [ubicacion, contacto, unidad, referencias, imagenBuffer, latitud, longitud];
+  const sql = 'INSERT INTO patrullas (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?,?)';
+  const values = [placa,ubicacion, contacto, unidad, referencias, imagenBuffer, latitud, longitud, ];
 
   req.getConnection((err, con) => {
     if (err) {
