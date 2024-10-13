@@ -35,7 +35,10 @@ const dbConfig = {
   host: "198.59.144.133",
   user: "mavahost_juan",
   password: "juanito18*#.",
-  database: "mavahost_omar"
+  database: "mavahost_omar",
+  acquireTimeout: 10000, // Aumenta el tiempo de espera de adquisición de conexión (en ms)
+  connectTimeout: 10000, // Aumenta el tiempo de espera de conexión (en ms)
+  timeout: 10000        // Aumenta el tiempo de espera general (en ms)
 };
 
 
