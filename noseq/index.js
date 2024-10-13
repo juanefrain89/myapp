@@ -36,9 +36,9 @@ const dbConfig = {
   user: "mavahost_juan",
   password: "juanito18*#.",
   database: "mavahost_omar",
-  acquireTimeout: 10000, // Aumenta el tiempo de espera de adquisición de conexión (en ms)
-  connectTimeout: 10000, // Aumenta el tiempo de espera de conexión (en ms)
-  timeout: 10000        // Aumenta el tiempo de espera general (en ms)
+  acquireTimeout: 10000, 
+  connectTimeout: 10000, 
+  timeout: 10000        
 };
 
 
@@ -86,6 +86,9 @@ app.get("/", (req, res) => {
 
 // Ruta para insertar datos en la base de datos
 app.post("/l", upload.single('imagen'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).send('No se ha recibido ninguna imagen.');
+  }
   const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud } = req.body;
   const imagenNombre = req.file ? req.file.filename : null; // Obtiene el nombre del archivo de la imagen
 
