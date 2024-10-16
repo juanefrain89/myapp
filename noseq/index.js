@@ -90,7 +90,7 @@ app.post("/l", upload.single('imagen'), (req, res) => {
     return res.status(400).send('No se ha recibido ninguna imagen.');
   }
   const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud } = req.body;
-  const imagenNombre = req.file ? req.file.filename : null; // Obtiene el nombre del archivo de la imagen
+  const imagenNombre = req.file ? req.file.filename : null; 
 
   const sql = 'INSERT INTO patrullas (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
   const values = [placa, ubicacion, contacto, unidad, referencias, imagenNombre, latitud, longitud];
@@ -113,6 +113,45 @@ app.post("/l", upload.single('imagen'), (req, res) => {
     });
   });
 });
+
+
+
+
+
+
+
+
+app.post("/registro", (req, res) => {
+ 
+  const { correo, password, rol } = req.body;
+  const imagenNombre = req.file ? req.file.filename : null; 
+
+  const sql = 'INSERT INTO usuarios (correo, contraseña, rol) VALUES (?, ?, ?)';
+  const values = [correo, password, rol];
+
+  req.getConnection((err, con) => {
+    if (err) {
+      console.error("Error de conexión a la base de datos:", err);
+      return res.status(500).send('Error de conexión a la base de datos');
+    }
+
+    con.query(sql, values, (err, result) => {
+      if (err) {
+        console.error("Error al insertar en la base de datos:", err);
+        return res.status(500).send('Error al insertar en la base de datos');
+      }else{
+        return res.send("bien")
+      }    
+    });
+  });
+});
+
+
+
+
+
+
+
 
 app.listen(4200, () => {
   console.log("Server running on port 4200");
