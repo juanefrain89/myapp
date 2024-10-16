@@ -101,7 +101,7 @@ app.post("/l", upload.single('imagen'), (req, res) => {
     con.query(sql, values, (err, result) => {
       if (err) {
         console.error("Error al insertar en la base de datos:", err);
-        return res.status(500).send('Error al insertar en la base de datos');
+        return res.send(err);
       }
 
       
