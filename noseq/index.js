@@ -119,25 +119,19 @@ app.get("/mostrar", (req, res) => {
   }
 });
 
-
-
-app.post("/l", upload.single('imagen'), (req, res) => {
+app.post("/l", (req, res) => {
   console.log(req.body);
 
   const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud, imagen } = req.body;
   console.log(ubicacion, placa, imagen);
-  
-  const imagenNombre = req.file ? req.file.filename : null; 
-
 
   const operacion = Number(req.body.operacion);  
-console.log(operacion);
+  console.log(operacion);
 
-  
-    const sql = 'INSERT INTO patrullas (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
- 
- 
-const values = [placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud];
+  const sql = 'INSERT INTO patrullas (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+
+  // Ya recibes la imagen completa en req.body.imagen, así que no es necesario modificarla
+  const values = [placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud];
 
   req.getConnection((err, con) => {
     if (err) {
@@ -148,8 +142,8 @@ const values = [placa, ubicacion, contacto, unidad, referencias, imagen, latitud
       if (err) {
         console.error("Error al insertar en la base de datos:", err);
         return res.send(err);
-      }     
-      const imagenUrl = imagenNombre ? `https://ddcd-5.onrender.com/imagenes/${imagenNombre}` : null;
+      }
+      
       res.status(200).send({ message: 'Registro exitoso', id: result.insertId, imagen: imagen });
     });
   });
