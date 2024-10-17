@@ -83,28 +83,39 @@ app.get("/", (req, res) => {
 
 
 app.post("/l", upload.single('imagen'), (req, res) => {
+  const body = Object.assign({}, req.body);
+ 
+  
+ 
+  
   if (!req.file) {
     return res.status(400).send('No se ha recibido ninguna imagen.');
   }
   const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud } = req.body;
   const imagenNombre = req.file ? req.file.filename : null; 
 
-  const sql = 'INSERT INTO patrullas_pendientes (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-  const values = [placa, ubicacion, contacto, unidad, referencias, imagenNombre, latitud, longitud];
+
+  const operacion = Number(req.body.operacion);  // Convertir a número
+console.log(operacion);
+
+  
+    const sql = 'INSERT INTO patrullas (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+   
+  
+
+
+const values = [placa, ubicacion, contacto, unidad, referencias, imagenNombre, latitud, longitud];
 
   req.getConnection((err, con) => {
     if (err) {
       console.error("Error de conexión a la base de datos:", err);
       return res.status(500).send('Error de conexión a la base de datos');
     }
-
     con.query(sql, values, (err, result) => {
       if (err) {
         console.error("Error al insertar en la base de datos:", err);
         return res.send(err);
-      }
-
-      
+      }     
       const imagenUrl = imagenNombre ? `https://ddcd-5.onrender.com/imagenes/${imagenNombre}` : null;
       res.status(200).send({ message: 'Registro exitoso', id: result.insertId, imagen: imagenUrl });
     });
@@ -185,6 +196,46 @@ app.post("/login", (req, res) => {
 });
 
 
+
+app.post("/pendientespost", upload.single('imagen'), (req, res) => {
+  const body = Object.assign({}, req.body);
+ 
+  
+ 
+  
+  if (!req.file) {
+    return res.status(400).send('No se ha recibido ninguna imagen.');
+  }
+  const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud } = req.body;
+  const imagenNombre = req.file ? req.file.filename : null; 
+
+
+  const operacion = Number(req.body.operacion);  // Convertir a número
+console.log(operacion);
+
+  
+   
+    const sql = 'INSERT INTO patrullas_pendientes (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+  
+
+
+const values = [placa, ubicacion, contacto, unidad, referencias, imagenNombre, latitud, longitud];
+
+  req.getConnection((err, con) => {
+    if (err) {
+      console.error("Error de conexión a la base de datos:", err);
+      return res.status(500).send('Error de conexión a la base de datos');
+    }
+    con.query(sql, values, (err, result) => {
+      if (err) {
+        console.error("Error al insertar en la base de datos:", err);
+        return res.send(err);
+      }     
+      const imagenUrl = imagenNombre ? `https://ddcd-5.onrender.com/imagenes/${imagenNombre}` : null;
+      res.status(200).send({ message: 'Registro exitoso', id: result.insertId, imagen: imagenUrl });
+    });
+  });
+});
 
 
 
