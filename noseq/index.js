@@ -123,7 +123,7 @@ app.get("/mostrar", (req, res) => {
 
 app.post("/l", upload.single('imagen'), (req, res) => {
   console.log(req.body);
-  
+return res.send(req.body)  
   const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud, imagen } = req.body;
   console.log(ubicacion, placa, imagen);
   
