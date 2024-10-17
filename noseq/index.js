@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 app.use(cors({
-  origin: "https://omar-7ebn.onrender.com"
+  origin: "http://localhost:5173/"
 }));
 
 const storage = multer.diskStorage({
