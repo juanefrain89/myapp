@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 app.use(cors({
-  origin: "http://localhost:5173"
+  origin: "https://omar-7ebn.onrender.com"
 }));
 
 const storage = multer.diskStorage({
@@ -122,8 +122,11 @@ app.get("/mostrar", (req, res) => {
 
 
 app.post("/l", upload.single('imagen'), (req, res) => {
-  const body = Object.assign({}, req.body);
+  console.log(req.body);
+  
   const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud, imagen } = req.body;
+  console.log(ubicacion, placa, imagen);
+  
   const imagenNombre = req.file ? req.file.filename : null; 
 
 
