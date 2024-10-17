@@ -122,7 +122,7 @@ app.get("/mostrar", (req, res) => {
 
 
 app.post("/l", upload.single('imagen'), (req, res) => {
-  const body = Object.assign({}, req.body);
+ 
   const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud, imagen } = req.body;
   const imagenNombre = req.file ? req.file.filename : null; 
 
