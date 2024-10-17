@@ -130,7 +130,7 @@ app.post("/l", upload.single('imagen'), (req, res) => {
  
   
  
-  const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud } = req.body;
+  const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud, imagen } = req.body;
   const imagenNombre = req.file ? req.file.filename : null; 
 
 
@@ -139,11 +139,9 @@ console.log(operacion);
 
   
     const sql = 'INSERT INTO patrullas (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-   
-  
-
-
-const values = [placa, ubicacion, contacto, unidad, referencias, imagenNombre, latitud, longitud];
+ 
+ 
+const values = [placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud];
 
   req.getConnection((err, con) => {
     if (err) {
