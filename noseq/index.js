@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 app.use(cors({
-  origin: "https://omar-7ebn.onrender.com"
+  origin: "http://localhost:5173"
 }));
 
 const storage = multer.diskStorage({
@@ -27,7 +27,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 } // Tamaño máximo de 5 MB
+  limits: { fileSize: 5 * 1024 * 1024 } 
 });
 
 
@@ -47,6 +47,7 @@ app.use(mysqlConexion(mysql, dbConfig, "single"));
 
 
 app.use('/imagenes', express.static(path.join(__dirname, 'imagenes')));
+
 app.get("/", (req, res) => {
   const query = `SELECT * FROM patrullas`;
   
@@ -82,15 +83,53 @@ app.get("/", (req, res) => {
 });
 
 
+
+
+app.get("/mostrar", (req, res) => {
+  const query = `SELECT * FROM patrullas_pendientes`;
+  
+  try {
+    req.getConnection((err, con) => {
+      if (err) {
+        console.error("Error al conectar a la base de datos:", err);
+        return res.status(500).send("Error al conectar a la base de datos");
+      }
+
+      con.query(query, (err, result) => {
+        if (err) {
+          console.error("Error al ejecutar la consulta:", err);
+          return res.status(500).send("Error al ejecutar la consulta en la base de datos");
+        }
+        
+        if (result.length === 0) {
+          console.log("No se encontraron resultados.");
+          return res.status(404).send("No se encontraron resultados.");
+        } else {
+             const resultsWithUrls = result.map(item => ({
+            ...item,
+             imagen: item.imagen ? `https://ddcd-5.onrender.com/imagenes/${item.imagen}` : null 
+          }));
+          res.status(200).send(resultsWithUrls);
+        }
+      });
+    });
+  } catch (error) {
+    console.error("Error inesperado:", error);
+    res.status(500).send("Error inesperado");
+  }
+});
+
+
+
+
+
 app.post("/l", upload.single('imagen'), (req, res) => {
   const body = Object.assign({}, req.body);
  
   
  
   
-  if (!req.file) {
-    return res.status(400).send('No se ha recibido ninguna imagen.');
-  }
+ 
   const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud } = req.body;
   const imagenNombre = req.file ? req.file.filename : null; 
 
@@ -200,24 +239,15 @@ app.post("/login", (req, res) => {
 app.post("/pendientespost", upload.single('imagen'), (req, res) => {
   const body = Object.assign({}, req.body);
  
-  
- 
-  
   if (!req.file) {
     return res.status(400).send('No se ha recibido ninguna imagen.');
   }
-  const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud } = req.body;
+  const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud} = req.body;
   const imagenNombre = req.file ? req.file.filename : null; 
-
-
   const operacion = Number(req.body.operacion);  // Convertir a número
 console.log(operacion);
 
-  
-   
     const sql = 'INSERT INTO patrullas_pendientes (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-  
-
 
 const values = [placa, ubicacion, contacto, unidad, referencias, imagenNombre, latitud, longitud];
 
