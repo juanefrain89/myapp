@@ -121,20 +121,13 @@ app.get("/mostrar", (req, res) => {
 
 
 
-
-
 app.post("/l", upload.single('imagen'), (req, res) => {
   const body = Object.assign({}, req.body);
- 
-  
- 
-  
- 
   const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud, imagen } = req.body;
   const imagenNombre = req.file ? req.file.filename : null; 
 
 
-  const operacion = Number(req.body.operacion);  // Convertir a número
+  const operacion = Number(req.body.operacion);  
 console.log(operacion);
 
   
@@ -154,7 +147,7 @@ const values = [placa, ubicacion, contacto, unidad, referencias, imagen, latitud
         return res.send(err);
       }     
       const imagenUrl = imagenNombre ? `https://ddcd-5.onrender.com/imagenes/${imagenNombre}` : null;
-      res.status(200).send({ message: 'Registro exitoso', id: result.insertId, imagen: imagenUrl });
+      res.status(200).send({ message: 'Registro exitoso', id: result.insertId, imagen: imagen });
     });
   });
 });
