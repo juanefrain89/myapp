@@ -118,20 +118,24 @@ app.get("/mostrar", (req, res) => {
     res.status(500).send("Error inesperado");
   }
 });
-
 app.post("/l", (req, res) => {
   console.log(req.body);
 
   const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud, imagen } = req.body;
   console.log(ubicacion, placa, imagen);
 
-  const operacion = Number(req.body.operacion);  
+  const operacion = Number(req.body.operacion);
   console.log(operacion);
+
+  // Validar si la URL de la imagen tiene duplicación
+  let imagenUrl = imagen;
+  if (imagenUrl.includes("https://ddcd-5.onrender.com/imagenes/https://ddcd-5.onrender.com/imagenes/")) {
+    imagenUrl = imagenUrl.replace("https://ddcd-5.onrender.com/imagenes/https://ddcd-5.onrender.com/imagenes/", "https://ddcd-5.onrender.com/imagenes/");
+  }
 
   const sql = 'INSERT INTO patrullas (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
-  // Ya recibes la imagen completa en req.body.imagen, así que no es necesario modificarla
-  const values = [placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud];
+  const values = [placa, ubicacion, contacto, unidad, referencias, imagenUrl, latitud, longitud];
 
   req.getConnection((err, con) => {
     if (err) {
@@ -143,8 +147,8 @@ app.post("/l", (req, res) => {
         console.error("Error al insertar en la base de datos:", err);
         return res.send(err);
       }
-      
-      res.status(200).send({ message: 'Registro exitoso', id: result.insertId, imagen: imagen });
+
+      res.status(200).send({ message: 'Registro exitoso', id: result.insertId, imagen: imagenUrl });
     });
   });
 });
