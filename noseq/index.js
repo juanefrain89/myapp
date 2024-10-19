@@ -328,7 +328,14 @@ req.getConnection((err, con)=>{
       return res.send(err);
     }
     if(resul == parseInt(codigo)){
-      return 'bien'
+      return res.send("bien ahi")
+      con.query(actualizar, valores, (err, resultados)=>{
+        if(err){
+          console.error("Error al insertar en la base de datos:", err);
+          return res.send(err);
+        }
+        return res.send("algo bien")
+      })
     }else{
       return resul, codigo
     }
