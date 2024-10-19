@@ -31,14 +31,14 @@ transporter.verify()
     console.error('Error verifying the transporter:', err);
   });
 
-async function main(correo) {
+async function main(correo,codigo) {
   try {
    
     const info = await transporter.sendMail({
       from: '"Maddison Foo Koch 👻" <razoj140@gmail.com>',
       to: `${correo}`,
       subject: "Hello ✔", 
-      text: "Hello world?", 
+      text: `${codigo}`, 
       html: "<b>Hello world?</b>",
     });
 
@@ -225,7 +225,7 @@ const codigo = Math.floor(Math.random() * (999 - 100 + 1)) + 100;
         console.error("Error al insertar en la base de datos:", err);
         return res.status(500).send('Error al insertar en la base de datos');
       }else{
-        main(correo).then(()=>{return res.send("se envio un codigo a tu correo")}).catch((e)=>{
+        main(correo, codigo).then(()=>{return res.send("se envio un codigo a tu correo")}).catch((e)=>{
        return   res.send(e)
         })
         
