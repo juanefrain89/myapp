@@ -307,7 +307,6 @@ const values = [placa, ubicacion, contacto, unidad, referencias, imagenNombre, l
     });
   });
 });
-
 app.post('/comprobar', (req, res) => {
   const { codigo, correo } = req.body;
 
@@ -317,28 +316,34 @@ app.post('/comprobar', (req, res) => {
   req.getConnection((err, con) => {
       if (err) {
           console.error("Error de conexión a la base de datos:", err);
-          return res.status(500).send('Error de conexión a la base de datos');
+          return res.status(500).send('Error de conexión a la base de datos'); // Solo envía un string aquí
       }
       
       con.query(sql, values, (err, result) => {
           if (err) {
               console.error("Error al consultar en la base de datos:", err);
-              return res.status(500).send('Error al consultar en la base de datos', err);
-          }          
+              return res.status(500).send('Error al consultar en la base de datos'); // Envía un string indicando el error
+          }
+          
           if (result.length === 0) {
-              return res.status(404).send('Usuario no encontrado');
-          }          
+              return res.status(404).send('Usuario no encontrado'); // Usuario no encontrado
+          }
+
           if (result[0].codigo === parseInt(codigo)) {
-              const actualizar = 'UPDATE usuarios SET verifiacion = ? WHERE correo = ?'; // Corrección de la consulta
+              const actualizar = 'UPDATE usuarios SET verifiacion = ? WHERE correo = ?';
               con.query(actualizar, [true, correo], (err) => {
                   if (err) {
                       console.error("Error al actualizar en la base de datos:", err);
-                      return res.send('Error al actualizar en la base de datos', err);
+                      return res.status(500).send('Error al actualizar en la base de datos'); // Este es el error que quieres
                   }
-                  return res.send("Código verificado correctamente");
+                  return res.send("Código verificado correctamente"); // Si todo va bien
               });
           } else {
-              return res.status(401).send('Código incorrecto' , codigo ,result[0].codigo );
+              return res.status(401).json({
+                  error: 'Código incorrecto', 
+                  enviado: codigo, 
+                  esperado: result[0].codigo 
+              });
           }
       });
   });
