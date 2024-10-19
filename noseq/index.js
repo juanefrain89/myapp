@@ -333,7 +333,7 @@ app.post('/comprobar', (req, res) => {
               con.query(actualizar, [true, correo], (err) => {
                   if (err) {
                       console.error("Error al actualizar en la base de datos:", err);
-                      return res.status(500).send('Error al actualizar en la base de datos');
+                      return res.status(500).send('Error al actualizar en la base de datos', err);
                   }
                   return res.send("Código verificado correctamente");
               });
