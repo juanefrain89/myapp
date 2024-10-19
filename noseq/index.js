@@ -53,7 +53,8 @@ async function main(correo,codigo) {
 
 
 app.use(cors({
-  origin: "https://omar-7ebn.onrender.com"
+  origin: "https://omar-7ebn.onrender.com",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
 }));
 
 const storage = multer.diskStorage({
@@ -310,7 +311,7 @@ const values = [placa, ubicacion, contacto, unidad, referencias, imagenNombre, l
 
 app.post('/comprobar', (req, res) =>{
 const {codigo, correo} = req.body;
-return res.send(codigo, correo)
+
 const sql = 'SELECT codigo FROM usuarios WHERE correo = ?';
 
 const values = [correo];
