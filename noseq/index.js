@@ -311,7 +311,7 @@ const values = [placa, ubicacion, contacto, unidad, referencias, imagenNombre, l
 
 app.post('/comprobar', (req, res) =>{
 const {codigo, correo} = req.body;
-return res.send(correo)
+
 
 const sql = 'SELECT codigo FROM usuarios WHERE correo = ?';
 
@@ -327,7 +327,11 @@ req.getConnection((err, con)=>{
       console.error("Error al insertar en la base de datos:", err);
       return res.send(err);
     }
-    return res.send(resul)
+    if(resul == parseInt(codigo)){
+      return 'bien'
+    }else{
+      return resul, codigo
+    }
   })
 })
 })
