@@ -330,7 +330,7 @@ app.post('/comprobar', (req, res) => {
           }
 
           if (result[0].codigo === parseInt(codigo)) {
-              const actualizar = 'UPDATE usuarios SET verifiacion = ? WHERE correo = ?';
+              const actualizar = 'UPDATE usuarios SET verificacion = ? WHERE correo = ?';
               con.query(actualizar, [true, correo], (err) => {
                   if (err) {
                       console.error("Error al actualizar en la base de datos:", err);
