@@ -39,7 +39,7 @@ async function main(correo,codigo) {
       to: `${correo}`,
       subject: "Hello ✔", 
       text: `${codigo}`, 
-      html: "<b>Hello world?</b>",
+      html: `<b>${codigo}</b>`,
     });
 
     console.log("Message sent: %s", info.messageId);
