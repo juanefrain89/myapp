@@ -9,6 +9,47 @@ const path = require("path");
 const jwt = require('jsonwebtoken');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+const nodemailer = require('nodemailer');
+
+// Crear el transportador de correo
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true, // true for port 465, false for other ports
+  auth: {
+    user: "razoj140@gmail.com", // tu correo
+    pass: "pipmzycmxgjmlbqg",   // tu contraseña de aplicaciones de Google
+  },
+});
+
+// Verificar el transportador
+transporter.verify()
+  .then(() => {
+    console.log('All good, ready to send emails!');
+  })
+  .catch(err => {
+    console.error('Error verifying the transporter:', err);
+  });
+
+async function main(correo) {
+  try {
+   
+    const info = await transporter.sendMail({
+      from: '"Maddison Foo Koch 👻" <razoj140@gmail.com>',
+      to: `${correo}`,
+      subject: "Hello ✔", 
+      text: "Hello world?", 
+      html: "<b>Hello world?</b>",
+    });
+
+    console.log("Message sent: %s", info.messageId);
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
+}
+
+// Llamar a la función para enviar el correo
+
 
 
 app.use(cors({
@@ -184,7 +225,10 @@ console.log(correo, password, rol);
         console.error("Error al insertar en la base de datos:", err);
         return res.status(500).send('Error al insertar en la base de datos');
       }else{
-        return res.send("bien")
+        main().then(()=>{return res.send("se envio un codigo a tu correo")}).catch((e)=>{
+       return   res.send(e)
+        })
+        
       }    
     });
   });
