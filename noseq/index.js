@@ -307,41 +307,47 @@ const values = [placa, ubicacion, contacto, unidad, referencias, imagenNombre, l
     });
   });
 });
+app.post('/comprobar', (req, res) => {
+  const { codigo, correo } = req.body;
 
+  const sql = 'SELECT codigo FROM usuarios WHERE correo = ?';
+  const values = [correo];
 
-app.post('/comprobar', (req, res) =>{
-const {codigo, correo} = req.body;
+  req.getConnection((err, con) => {
+      if (err) {
+          console.error("Error de conexión a la base de datos:", err);
+          return res.status(500).send('Error de conexión a la base de datos');
+      }
+      
+      con.query(sql, values, (err, result) => {
+          if (err) {
+              console.error("Error al consultar en la base de datos:", err);
+              return res.status(500).send('Error al consultar en la base de datos');
+          }
 
+          // Si no se encuentra el usuario
+          if (result.length === 0) {
+              return res.status(404).send('Usuario no encontrado');
+          }
 
-const sql = 'SELECT codigo FROM usuarios WHERE correo = ?';
+          // Comparamos el código obtenido con el proporcionado
+          if (result[0].codigo === parseInt(codigo)) {
+              // Código correcto, actualizamos la verificación
+              const actualizar = 'UPDATE usuarios SET verifiacion = ? WHERE correo = ?'; // Corrección de la consulta
+              con.query(actualizar, [true, correo], (err) => {
+                  if (err) {
+                      console.error("Error al actualizar en la base de datos:", err);
+                      return res.status(500).send('Error al actualizar en la base de datos');
+                  }
+                  return res.send("Código verificado correctamente");
+              });
+          } else {
+              return res.status(401).send('Código incorrecto');
+          }
+      });
+  });
+});
 
-const values = [correo];
-
-req.getConnection((err, con)=>{
-  if (err) {
-    console.error("Error de conexión a la base de datos:", err);
-    return res.status(500).send('Error de conexión a la base de datos');
-  }
-  con.query(sql, values,(err, resul)=>{
-    if(err){
-      console.error("Error al insertar en la base de datos:", err);
-      return res.send(err);
-    }
-    if(resul == parseInt(codigo)){
-      return res.send("bien ahi")
-      con.query(actualizar, valores, (err, resultados)=>{
-        if(err){
-          console.error("Error al insertar en la base de datos:", err);
-          return res.send(err);
-        }
-        return res.send("algo bien")
-      })
-    }else{
-      return resul, codigo
-    }
-  })
-})
-})
 
 
 app.listen(4200, () => {
