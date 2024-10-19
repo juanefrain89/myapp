@@ -209,10 +209,10 @@ app.post("/registro", (req, res) => {
  console.log(req.body);
  
   const { correo, password, rol } = req.body;  
-console.log(correo, password, rol);
-
-  const sql = 'INSERT INTO usuarios (correo, contraseña, rol) VALUES (?, ?, ?)';
-  const values = [correo, password, rol];
+console.log(correo, password, rol );
+const codigo = Math.floor(Math.random() * (999 - 100 + 1)) + 100;
+  const sql = 'INSERT INTO usuarios (correo, contraseña, rol, codigo) VALUES (?, ?, ?, ?)';
+  const values = [correo, password, rol, codigo];
 
   req.getConnection((err, con) => {
     if (err) {
