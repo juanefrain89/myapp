@@ -323,16 +323,13 @@ app.post('/comprobar', (req, res) => {
           if (err) {
               console.error("Error al consultar en la base de datos:", err);
               return res.status(500).send('Error al consultar en la base de datos');
-          }
-
-          // Si no se encuentra el usuario
+          }          
           if (result.length === 0) {
               return res.status(404).send('Usuario no encontrado');
           }
 
-          // Comparamos el código obtenido con el proporcionado
+          
           if (result[0].codigo === parseInt(codigo)) {
-              // Código correcto, actualizamos la verificación
               const actualizar = 'UPDATE usuarios SET verifiacion = ? WHERE correo = ?'; // Corrección de la consulta
               con.query(actualizar, [true, correo], (err) => {
                   if (err) {
