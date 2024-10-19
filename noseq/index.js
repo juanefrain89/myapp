@@ -308,6 +308,28 @@ const values = [placa, ubicacion, contacto, unidad, referencias, imagenNombre, l
 });
 
 
+app.post('comprobar', (req, res) =>{
+const {codigo, correo} = req.body;
+return res.send(codigo, correo)
+const sql = 'SELECT codigo FROM usuarios WHERE correo = ?';
+
+const values = [correo];
+
+req.getConnection((err, con)=>{
+  if (err) {
+    console.error("Error de conexión a la base de datos:", err);
+    return res.status(500).send('Error de conexión a la base de datos');
+  }
+  con.query(sql, values,(err, resul)=>{
+    if(err){
+      console.error("Error al insertar en la base de datos:", err);
+      return res.send(err);
+    }
+    return res.send(resul)
+  })
+})
+})
+
 
 app.listen(4200, () => {
   console.log("Server running on port 4200");
