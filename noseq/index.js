@@ -307,6 +307,7 @@ const values = [placa, ubicacion, contacto, unidad, referencias, imagenNombre, l
     });
   });
 });
+
 app.post('/comprobar', (req, res) => {
   const { codigo, correo } = req.body;
 
@@ -339,7 +340,7 @@ app.post('/comprobar', (req, res) => {
                   return res.send("Código verificado correctamente");
               });
           } else {
-              return res.status(401).send('Código incorrecto');
+              return res.status(401).send('Código incorrecto' , codigo ,result[0].codigo );
           }
       });
   });
