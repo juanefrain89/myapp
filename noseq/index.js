@@ -308,7 +308,7 @@ const values = [placa, ubicacion, contacto, unidad, referencias, imagenNombre, l
 });
 
 
-app.post('comprobar', (req, res) =>{
+app.post('/comprobar', (req, res) =>{
 const {codigo, correo} = req.body;
 return res.send(codigo, correo)
 const sql = 'SELECT codigo FROM usuarios WHERE correo = ?';
