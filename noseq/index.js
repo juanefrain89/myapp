@@ -225,7 +225,7 @@ console.log(correo, password, rol);
         console.error("Error al insertar en la base de datos:", err);
         return res.status(500).send('Error al insertar en la base de datos');
       }else{
-        main().then(()=>{return res.send("se envio un codigo a tu correo")}).catch((e)=>{
+        main(correo).then(()=>{return res.send("se envio un codigo a tu correo")}).catch((e)=>{
        return   res.send(e)
         })
         
