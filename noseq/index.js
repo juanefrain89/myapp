@@ -163,50 +163,38 @@ app.get("/mostrar", (req, res) => {
   }
 });
 
-
-
 app.post("/l", upload.single('imagen'), (req, res) => {
   console.log(req.body);
 
-  const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud, imagen, id } = req.body;
-  console.log(ubicacion, placa, imagen);
-  
-  const imagenNombre = req.file ? req.file.filename : null; 
-
-
+  const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud, id } = req.body;
+  const imagenNombre = req.file ? req.file.filename : null;
   const operacion = Number(req.body.operacion);  
-console.log(operacion);
+  console.log(ubicacion, placa, imagenNombre, operacion);
 
-  
-    const sql = 'INSERT INTO patrullas (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-
-const values = [placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud];
+  const sql = 'INSERT INTO patrullas (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+  const values = [placa, ubicacion, contacto, unidad, referencias, imagenNombre, latitud, longitud];
 
   req.getConnection((err, con) => {
     if (err) {
       console.error("Error de conexión a la base de datos:", err);
       return res.status(500).send('Error de conexión a la base de datos');
     }
+
     con.query(sql, values, (err, result) => {
       if (err) {
         console.error("Error al insertar en la base de datos:", err);
         return res.send(err);
       }     
-      const sql2 = `DELETE FROM patrullas_pendientes WHERE id = ?`;
-      req.getConnection((err, con) => {
+
+      const sql2 = 'DELETE FROM patrullas_pendientes WHERE id = ?';
+      con.query(sql2, [id], (err) => {
         if (err) {
-          console.error("Error de conexión a la base de datos:", err);
-          return res.status(500).send('Error de conexión a la base de datos');
-        }
-        con.query(sql2, id, (err)=>{
-          if (err) {
-            console.error("Error al borrar :", err);
-            return res.send(err);
-          }  
-          res.status(200).send({ message: 'Registro exitoso', id: result.insertId, imagen: imagen });
-        })
-      })
-     
+          console.error("Error al borrar:", err);
+          return res.send(err);
+        }  
+
+        res.status(200).send({ message: 'Registro exitoso', id: result.insertId, imagen: imagenNombre });
+      });
     });
   });
 });
