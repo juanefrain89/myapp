@@ -291,6 +291,7 @@ console.log(operacion);
     const sql = 'INSERT INTO patrullas_pendientes (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?)';
 
 const values = [placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud];
+console.log("url de la imagen", imagen);
 
   req.getConnection((err, con) => {
     if (err) {
