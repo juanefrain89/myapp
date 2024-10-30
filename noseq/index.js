@@ -53,7 +53,7 @@ async function main(correo,codigo) {
 
 
 app.use(cors({
-  origin: "https://omar-7ebn.onrender.com",
+  origin: "https://omar-d35h.vercel.app",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
 }));
 
