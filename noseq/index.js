@@ -303,8 +303,8 @@ console.log("url de la imagen", imagen);
         console.error("Error al insertar en la base de datos:", err);
         return res.send(err);
       }     
-      const imagenUrl = imagenNombre ? `https://ddcd-5.onrender.com/imagenes/${imagenNombre}` : null;
-      res.status(200).send({ message: 'Registro exitoso', id: result.insertId, imagen: imagenUrl });
+     
+      res.status(200).send({ message: 'Registro exitoso', id: result.insertId, imagen:imagen });
     });
   });
 });
