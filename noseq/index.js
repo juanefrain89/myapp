@@ -168,7 +168,7 @@ app.get("/mostrar", (req, res) => {
 app.post("/l", upload.single('imagen'), (req, res) => {
   console.log(req.body);
 
-  const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud, imagen } = req.body;
+  const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud, imagen, id } = req.body;
   console.log(ubicacion, placa, imagen);
   
   const imagenNombre = req.file ? req.file.filename : null; 
@@ -179,8 +179,7 @@ console.log(operacion);
 
   
     const sql = 'INSERT INTO patrullas (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
- 
- 
+
 const values = [placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud];
 
   req.getConnection((err, con) => {
@@ -193,8 +192,21 @@ const values = [placa, ubicacion, contacto, unidad, referencias, imagen, latitud
         console.error("Error al insertar en la base de datos:", err);
         return res.send(err);
       }     
-    
-      res.status(200).send({ message: 'Registro exitoso', id: result.insertId, imagen: imagen });
+      const sql2 = `DELETE FROM patrullas_pendientes WHERE id = ?`;
+      req.getConnection((err, con) => {
+        if (err) {
+          console.error("Error de conexión a la base de datos:", err);
+          return res.status(500).send('Error de conexión a la base de datos');
+        }
+        con.query(sql2, id, (err)=>{
+          if (err) {
+            console.error("Error al borrar :", err);
+            return res.send(err);
+          }  
+          res.status(200).send({ message: 'Registro exitoso', id: result.insertId, imagen: imagen });
+        })
+      })
+     
     });
   });
 });
