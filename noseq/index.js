@@ -283,14 +283,14 @@ app.post("/pendientespost", upload.single('imagen'), (req, res) => {
   if (!req.file) {
     return res.status(400).send('No se ha recibido ninguna imagen.');
   }
-  const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud} = req.body;
+  const { imagen2, placa, ubicacion, contacto, unidad, referencias, latitud, longitud} = req.body;
   const imagenNombre = req.file ? req.file.filename : null; 
   const operacion = Number(req.body.operacion);  // Convertir a número
 console.log(operacion);
 
-    const sql = 'INSERT INTO patrullas_pendientes (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    const sql = 'INSERT INTO patrullas_pendientes (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?)';
 
-const values = [placa, ubicacion, contacto, unidad, referencias, imagenNombre, latitud, longitud];
+const values = [placa, ubicacion, contacto, unidad, referencias, imagen2, latitud, longitud];
 
   req.getConnection((err, con) => {
     if (err) {
