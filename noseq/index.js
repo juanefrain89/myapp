@@ -162,17 +162,15 @@ app.get("/mostrar", (req, res) => {
     res.status(500).send("Error inesperado");
   }
 });
-
-app.post("/l", upload.single('imagen'), (req, res) => {
+app.post("/l", (req, res) => {
   console.log(req.body);
 
-  const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud, id } = req.body;
-  const imagenNombre = req.file ? req.file.filename : null;
-  const operacion = Number(req.body.operacion);  
-  console.log(ubicacion, placa, imagenNombre, operacion);
+  const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud, id, imagen } = req.body;
+  const operacion = Number(req.body.operacion);
+  console.log(ubicacion, placa, imagen, operacion);
 
   const sql = 'INSERT INTO patrullas (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-  const values = [placa, ubicacion, contacto, unidad, referencias, imagenNombre, latitud, longitud];
+  const values = [placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud];
 
   req.getConnection((err, con) => {
     if (err) {
@@ -193,13 +191,11 @@ app.post("/l", upload.single('imagen'), (req, res) => {
           return res.send(err);
         }  
 
-        res.status(200).send({ message: 'Registro exitoso', id: result.insertId, imagen: imagenNombre });
+        res.status(200).send({ message: 'Registro exitoso', id: result.insertId, imagen });
       });
     });
   });
 });
-
-
 
 
 
@@ -276,20 +272,21 @@ app.post("/login", (req, res) => {
 });
 
 
-app.post("/pendientespost", (req, res) => {
-  const { imagen, placa, ubicacion, contacto, unidad, referencias, latitud, longitud } = req.body;
 
-  if (!imagen) {
-    return res.status(400).send('No se ha recibido ninguna URL de imagen.');
+app.post("/pendientespost", upload.single('imagen'), (req, res) => {
+  const body = Object.assign({}, req.body);
+ 
+  if (!req.file) {
+    return res.status(400).send('No se ha recibido ninguna imagen.');
   }
-
+  const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud} = req.body;
+  const imagenNombre = req.file ? req.file.filename : null; 
   const operacion = Number(req.body.operacion);  // Convertir a número
-  console.log("Operación:", operacion);
+console.log(operacion);
 
-  const sql = 'INSERT INTO patrullas_pendientes (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-  const values = [placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud];
-  
-  console.log("URL de la imagen:", imagen);
+    const sql = 'INSERT INTO patrullas_pendientes (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+
+const values = [placa, ubicacion, contacto, unidad, referencias, imagenNombre, latitud, longitud];
 
   req.getConnection((err, con) => {
     if (err) {
@@ -301,11 +298,52 @@ app.post("/pendientespost", (req, res) => {
         console.error("Error al insertar en la base de datos:", err);
         return res.send(err);
       }     
-      res.status(200).send({ message: 'Registro exitoso', id: result.insertId, imagen: imagen });
+      const imagenUrl = imagenNombre ? `https://ddcd-5.onrender.com/imagenes/${imagenNombre}` : null;
+      res.status(200).send({ message: 'Registro exitoso', id: result.insertId, imagen: imagenUrl });
     });
   });
 });
+app.post('/comprobar', (req, res) => {
+  const { codigo, correo } = req.body;
 
+  const sql = 'SELECT codigo FROM usuarios WHERE correo = ?';
+  const values = [correo];
+
+  req.getConnection((err, con) => {
+      if (err) {
+          console.error("Error de conexión a la base de datos:", err);
+          return res.status(500).send('Error de conexión a la base de datos'); // Solo envía un string aquí
+      }
+      
+      con.query(sql, values, (err, result) => {
+          if (err) {
+              console.error("Error al consultar en la base de datos:", err);
+              return res.status(500).send('Error al consultar en la base de datos'); // Envía un string indicando el error
+          }
+          
+          if (result.length === 0) {
+              return res.status(404).send('Usuario no encontrado'); // Usuario no encontrado
+          }
+
+          if (result[0].codigo === parseInt(codigo)) {
+              const actualizar = 'UPDATE usuarios SET verificacion = ? WHERE correo = ?';
+              con.query(actualizar, [true, correo], (err) => {
+                  if (err) {
+                      console.error("Error al actualizar en la base de datos:", err);
+                      return res.status(500).send('Error al actualizar en la base de datos'); // Este es el error que quieres
+                  }
+                  return res.send("Código verificado correctamente"); // Si todo va bien
+              });
+          } else {
+              return res.status(401).json({
+                  error: 'Código incorrecto', 
+                  enviado: codigo, 
+                  esperado: result[0].codigo 
+              });
+          }
+      });
+  });
+});
 
 
 
