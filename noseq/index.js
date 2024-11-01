@@ -271,6 +271,7 @@ app.post("/pendientespost", upload.single('imagen'), async (req, res) => {
   }
 
   const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud } = req.body;
+console.log(req.file);
 
   try {
     const form = new FormData(); // Crea una nueva instancia de FormData
