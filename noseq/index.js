@@ -263,6 +263,8 @@ app.post("/login", (req, res) => {
   }
 });
 
+
+
 app.post("/pendientespost", upload.single('imagen'), async (req, res) => {
   const body = Object.assign({}, req.body);
 
@@ -273,13 +275,13 @@ app.post("/pendientespost", upload.single('imagen'), async (req, res) => {
   const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud } = req.body;
 
   try {
-    const form = new FormData();
+    const form = new FormData(); // Crea una nueva instancia de FormData
     form.append('image', req.file.buffer); // Usamos el buffer de la imagen
 
     // Subimos la imagen a Imgur
     const imgResponse = await axios.post('https://api.imgur.com/3/image', form, {
       headers: {
-        ...form.getHeaders(),
+        ...form.getHeaders(), // Ahora esto debería funcionar
         Authorization: `Client-ID ${CLIENT_ID}`,
       }
     });
@@ -309,6 +311,7 @@ app.post("/pendientespost", upload.single('imagen'), async (req, res) => {
     return res.status(500).send('Error al subir la imagen a Imgur');
   }
 });
+
 
 
 app.post('/comprobar', (req, res) => {
