@@ -6,13 +6,20 @@ const multer = require("multer");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
 const jwt = require('jsonwebtoken');
+const FormData = require('form-data');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const nodemailer = require('nodemailer');
 
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
-const cloudinary = require('cloudinary').v2;
+cloudinary.config({
+  cloud_name: 'de8ixclml',
+  api_key: '411843524515185',
+  api_secret: 'Y8BUj_6jzO2HXJX10Pz9BZPhdW0',
+});
+
 
 // Crear el transportador de correo
 const transporter = nodemailer.createTransport({
