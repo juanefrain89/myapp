@@ -260,6 +260,47 @@ app.post("/login", (req, res) => {
   }
 });
 
+
+
+
+
+
+
+app.post('/upload', upload.single('imagen'), async (req, res) => {
+  if (!req.file) {
+      return res.status(400).send('No file uploaded.');
+  }
+
+  try {
+      const form = new FormData();
+      form.append('image', req.file.buffer, req.file.originalname); // Cambiar 'imagen' a 'image'
+
+      const response = await axios.post('https://api.imgur.com/3/image', form, {
+          headers: {
+              ...form.getHeaders(), // Incluye los headers de FormData
+              Authorization: `Client-ID ${CLIENT_ID}`,
+          },
+      });
+
+      // Obtiene la URL de la imagen subida
+      const imageUrl = response.data.data.link;
+      console.log('Image uploaded successfully:', imageUrl); // La URL de la imagen
+      res.status(200).json({ imageUrl });
+  } catch (error) {
+      console.error('Error uploading image:', error.response ? error.response.data : error.message);
+      res.status(500).send('Error uploading image');
+  }
+});
+
+
+
+
+
+
+
+
+
+
 app.post("/pendientespost", upload.single('imagen'), async (req, res) => {
   const body = Object.assign({}, req.body);
 
