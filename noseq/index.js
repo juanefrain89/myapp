@@ -23,7 +23,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const CLIENT_ID = 'e8e3f38bda95552';
+const CLIENT_ID = '2b07554d2b25b5b';
 transporter.verify()
   .then(() => {
     console.log('All good, ready to send emails!');
