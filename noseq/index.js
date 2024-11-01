@@ -11,6 +11,8 @@ const jwt = require('jsonwebtoken');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const nodemailer = require('nodemailer');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
 const FormData = require('form-data');
 // Crear el transportador de correo
 const transporter = nodemailer.createTransport({
@@ -22,8 +24,19 @@ const transporter = nodemailer.createTransport({
     pass: "pipmzycmxgjmlbqg",   // tu contraseña de aplicaciones de Google
   },
 });
+cloudinary.config({
+  cloud_name: 'de8ixclml',
+  api_key: '411843524515185',
+  api_secret: 'Y8BUj_6jzO2HXJX10Pz9BZPhdW0',
+});
 
-const CLIENT_ID = '2b07554d2b25b5b';
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'imagenes', // Nombre de la carpeta en Cloudinary
+    allowed_formats: ['jpg', 'png', 'jpeg'], // Formatos permitidos
+  },
+});
 transporter.verify()
   .then(() => {
     console.log('All good, ready to send emails!');
@@ -58,9 +71,8 @@ app.use(cors({
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
 }));
 
-const storage = multer.memoryStorage();
 
-const upload = multer({ storage });
+const upload = multer({ storage: storage });
 
 const dbConfig = {
   host: "198.59.144.133",
@@ -266,37 +278,6 @@ app.post("/login", (req, res) => {
 
 
 
-app.post('/upload', upload.single('imagen'), async (req, res) => {
-  if (!req.file) {
-      return res.status(400).send('No file uploaded.');
-  }
-
-  try {
-      const form = new FormData();
-      form.append('image', req.file.buffer, req.file.originalname); // Cambiar 'imagen' a 'image'
-
-      const response = await axios.post('https://api.imgur.com/3/image', form, {
-          headers: {
-              ...form.getHeaders(), // Incluye los headers de FormData
-              Authorization: `Client-ID ${CLIENT_ID}`,
-          },
-      });
-
-      // Obtiene la URL de la imagen subida
-      const imageUrl = response.data.data.link;
-      console.log('Image uploaded successfully:', imageUrl); // La URL de la imagen
-      res.status(200).json({ imageUrl });
-  } catch (error) {
-      console.error('Error uploading image:', error.response ? error.response.data : error.message);
-      res.status(500).send('Error uploading image');
-  }
-});
-
-
-
-
-
-
 
 
 
@@ -307,25 +288,18 @@ app.post("/pendientespost", upload.single('imagen'), async (req, res) => {
   if (!req.file) {
     return res.status(400).send('No se ha recibido ninguna imagen.');
   }
-
+const imagenUrl =  req.file.path
   const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud } = req.body;
 console.log(req.file);
 
   try {
-    const form = new FormData(); // Crea una nueva instancia de FormData
-    form.append('image', req.file.buffer,  req.file.originalname); // Usamos el buffer de la imagen
+  
+    
 
-    // Subimos la imagen a Imgur
-    const imgResponse = await axios.post('https://api.imgur.com/3/image', form, {
-      headers: {
-        ...form.getHeaders(),
-        Authorization: `Client-ID ${CLIENT_ID}`,
-      }
-    });
+ 
+   
 
-    const imagenUrl = imgResponse.data.data.link; // La URL directa de la imagen
 
-    // Guardamos los datos en la base de datos
     const sql = 'INSERT INTO patrullas_pendientes (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
     const values = [placa, ubicacion, contacto, unidad, referencias, imagenUrl, latitud, longitud];
 
@@ -344,8 +318,8 @@ console.log(req.file);
     });
 
   } catch (error) {
-    console.error('Error al subir la imagen a Imgur:', error.response ? error.response.data : error.message);
-    return res.status(500).send('Error al subir la imagen a Imgur');
+    console.error(error)
+    return res.status(500).send("Error al subir la imagen" );
   }
 });
 
