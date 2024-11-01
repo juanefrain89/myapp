@@ -263,8 +263,6 @@ app.post("/login", (req, res) => {
   }
 });
 
-
-
 app.post("/pendientespost", upload.single('imagen'), async (req, res) => {
   const body = Object.assign({}, req.body);
 
@@ -281,7 +279,7 @@ app.post("/pendientespost", upload.single('imagen'), async (req, res) => {
     // Subimos la imagen a Imgur
     const imgResponse = await axios.post('https://api.imgur.com/3/image', form, {
       headers: {
-        ...form.getHeaders(), // Ahora esto debería funcionar
+        ...form.getHeaders(),
         Authorization: `Client-ID ${CLIENT_ID}`,
       }
     });
@@ -311,7 +309,6 @@ app.post("/pendientespost", upload.single('imagen'), async (req, res) => {
     return res.status(500).send('Error al subir la imagen a Imgur');
   }
 });
-
 
 
 app.post('/comprobar', (req, res) => {
