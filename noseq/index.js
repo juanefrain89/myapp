@@ -6,14 +6,14 @@ const multer = require("multer");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
-const axios = require('axios');
 const jwt = require('jsonwebtoken');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const nodemailer = require('nodemailer');
+
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('cloudinary').v2;
-const FormData = require('form-data');
+
 // Crear el transportador de correo
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -24,19 +24,8 @@ const transporter = nodemailer.createTransport({
     pass: "pipmzycmxgjmlbqg",   // tu contraseña de aplicaciones de Google
   },
 });
-cloudinary.config({
-  cloud_name: 'de8ixclml',
-  api_key: '411843524515185',
-  api_secret: 'Y8BUj_6jzO2HXJX10Pz9BZPhdW0',
-});
 
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'imagenes', // Nombre de la carpeta en Cloudinary
-    allowed_formats: ['jpg', 'png', 'jpeg'], // Formatos permitidos
-  },
-});
+const CLIENT_ID = 'e8e3f38bda95552';
 transporter.verify()
   .then(() => {
     console.log('All good, ready to send emails!');
@@ -72,7 +61,18 @@ app.use(cors({
 }));
 
 
+
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'imagenes', // Nombre de la carpeta en Cloudinary
+    allowed_formats: ['jpg', 'png', 'jpeg'], // Formatos permitidos
+  },
+});
+
+
 const upload = multer({ storage: storage });
+
 
 const dbConfig = {
   host: "198.59.144.133",
@@ -275,13 +275,6 @@ app.post("/login", (req, res) => {
 
 
 
-
-
-
-
-
-
-
 app.post("/pendientespost", upload.single('imagen'), async (req, res) => {
   const body = Object.assign({}, req.body);
 
@@ -298,9 +291,7 @@ console.log(req.file);
 
   try {
   
-    
 
- 
    
 
 
@@ -326,6 +317,24 @@ console.log(req.file);
     return res.status(500).send("Error al subir la imagen" );
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 app.post('/comprobar', (req, res) => {
