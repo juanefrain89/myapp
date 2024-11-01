@@ -288,7 +288,11 @@ app.post("/pendientespost", upload.single('imagen'), async (req, res) => {
   if (!req.file) {
     return res.status(400).send('No se ha recibido ninguna imagen.');
   }
-const imagenUrl =  req.file.path
+// Reemplaza la raíz del backend si está presente
+// Extrae solo la URL que pertenece a Cloudinary
+const imagenUrl = req.file.path.match(/https:\/\/res\.cloudinary\.com\/[^\s]+/)[0];
+
+
   const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud } = req.body;
 console.log(req.file);
 
