@@ -11,7 +11,7 @@ const jwt = require('jsonwebtoken');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const nodemailer = require('nodemailer');
-
+const FormData = require('form-data');
 // Crear el transportador de correo
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
