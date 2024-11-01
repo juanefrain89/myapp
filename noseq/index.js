@@ -60,10 +60,7 @@ app.use(cors({
 
 const storage = multer.memoryStorage();
 
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 } // Limite de 5MB
-});
+const upload = multer({ storage });
 
 const dbConfig = {
   host: "198.59.144.133",
@@ -275,7 +272,7 @@ console.log(req.file);
 
   try {
     const form = new FormData(); // Crea una nueva instancia de FormData
-    form.append('image', req.file.buffer); // Usamos el buffer de la imagen
+    form.append('image', req.file.buffer,  req.file.originalname); // Usamos el buffer de la imagen
 
     // Subimos la imagen a Imgur
     const imgResponse = await axios.post('https://api.imgur.com/3/image', form, {
