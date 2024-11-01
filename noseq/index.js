@@ -262,8 +262,6 @@ app.post("/login", (req, res) => {
   }
 });
 
-
-
 app.post("/pendientespost", upload.single('imagen'), async (req, res) => {
   const body = Object.assign({}, req.body);
 
