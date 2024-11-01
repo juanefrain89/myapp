@@ -266,7 +266,7 @@ app.post("/login", (req, res) => {
 
 
 
-app.post('/upload', upload.single('image'), async (req, res) => {
+app.post('/upload', upload.single('imagen'), async (req, res) => {
   if (!req.file) {
       return res.status(400).send('No file uploaded.');
   }
