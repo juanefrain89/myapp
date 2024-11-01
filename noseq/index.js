@@ -22,7 +22,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Verificar el transportador
+const CLIENT_ID = 'e8e3f38bda95552';
 transporter.verify()
   .then(() => {
     console.log('All good, ready to send emails!');
@@ -57,21 +57,12 @@ app.use(cors({
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
 }));
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "./imagenes"); 
-  },
-  filename: (req, file, cb) => {
-    const ext = file.originalname.split(".").pop();
-    cb(null, `${Date.now()}.${ext}`); 
-  }
-});
+const storage = multer.memoryStorage();
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 } 
+  limits: { fileSize: 5 * 1024 * 1024 } // Limite de 5MB
 });
-
 
 const dbConfig = {
   host: "198.59.144.133",
@@ -273,36 +264,54 @@ app.post("/login", (req, res) => {
 
 
 
-app.post("/pendientespost", upload.single('imagen'), (req, res) => {
+app.post("/pendientespost", upload.single('imagen'), async (req, res) => {
   const body = Object.assign({}, req.body);
- 
+
   if (!req.file) {
     return res.status(400).send('No se ha recibido ninguna imagen.');
   }
-  const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud} = req.body;
-  const imagenNombre = req.file ? req.file.filename : null; 
-  const operacion = Number(req.body.operacion);  // Convertir a número
-console.log(operacion);
 
-    const sql = 'INSERT INTO patrullas_pendientes (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+  const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud } = req.body;
 
-const values = [placa, ubicacion, contacto, unidad, referencias, imagenNombre, latitud, longitud];
+  try {
+    const form = new FormData();
+    form.append('image', req.file.buffer); // Usamos el buffer de la imagen
 
-  req.getConnection((err, con) => {
-    if (err) {
-      console.error("Error de conexión a la base de datos:", err);
-      return res.status(500).send('Error de conexión a la base de datos');
-    }
-    con.query(sql, values, (err, result) => {
-      if (err) {
-        console.error("Error al insertar en la base de datos:", err);
-        return res.send(err);
-      }     
-      const imagenUrl = imagenNombre ? `https://ddcd-5.onrender.com/imagenes/${imagenNombre}` : null;
-      res.status(200).send({ message: 'Registro exitoso', id: result.insertId, imagen: imagenUrl });
+    // Subimos la imagen a Imgur
+    const imgResponse = await axios.post('https://api.imgur.com/3/image', form, {
+      headers: {
+        ...form.getHeaders(),
+        Authorization: `Client-ID ${CLIENT_ID}`,
+      }
     });
-  });
+
+    const imagenUrl = imgResponse.data.data.link; // La URL directa de la imagen
+
+    // Guardamos los datos en la base de datos
+    const sql = 'INSERT INTO patrullas_pendientes (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    const values = [placa, ubicacion, contacto, unidad, referencias, imagenUrl, latitud, longitud];
+
+    req.getConnection((err, con) => {
+      if (err) {
+        console.error("Error de conexión a la base de datos:", err);
+        return res.status(500).send('Error de conexión a la base de datos');
+      }
+      con.query(sql, values, (err, result) => {
+        if (err) {
+          console.error("Error al insertar en la base de datos:", err);
+          return res.send(err);
+        }
+        res.status(200).send({ message: 'Registro exitoso', id: result.insertId, imagen: imagenUrl });
+      });
+    });
+
+  } catch (error) {
+    console.error('Error al subir la imagen a Imgur:', error.response ? error.response.data : error.message);
+    return res.status(500).send('Error al subir la imagen a Imgur');
+  }
 });
+
+
 app.post('/comprobar', (req, res) => {
   const { codigo, correo } = req.body;
 
