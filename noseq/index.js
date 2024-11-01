@@ -288,7 +288,7 @@ app.post("/pendientespost", upload.single('imagen'), async (req, res) => {
   if (!req.file) {
     return res.status(400).send('No se ha recibido ninguna imagen.');
   }
-const imagenUrl =  req.file.path
+const imagenUrl =  req.file
   const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud } = req.body;
 console.log(req.file);
 
