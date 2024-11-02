@@ -62,8 +62,9 @@ async function main(correo,codigo) {
 
 
 
+
 app.use(cors({
-  origin: "https://omar-d35h.vercel.app",
+  origin: "https://localhost:5173",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
 }));
 
@@ -93,7 +94,55 @@ const dbConfig = {
 
 
 
-app.use(mysqlConexion(mysql, dbConfig, "single"));
+
+
+
+function handleDisconnect() {
+  const connection = mysql.createConnection(dbConfig);
+
+  connection.connect((err) => {
+    if (err) {
+      console.error("Error al conectar:", err);
+      setTimeout(handleDisconnect, 2000); // Espera antes de intentar reconectar
+    } else {
+      console.log("Conectado a la base de datos.");
+    }
+  });
+
+  connection.on("error", (err) => {
+    if (err.code === "PROTOCOL_CONNECTION_LOST") {
+      console.error("Conexión perdida, intentando reconectar...");
+      handleDisconnect(); // Reconectar automáticamente
+    } else {
+      throw err;
+    }
+  });
+
+  return connection;
+}
+
+const connection = handleDisconnect();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.use(mysqlConexion(mysql, dbConfig, "pool"));
 
 
 app.use('/imagenes', express.static(path.join(__dirname, 'imagenes')));
