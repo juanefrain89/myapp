@@ -64,7 +64,7 @@ async function main(correo,codigo) {
 
 
 app.use(cors({
-  origin: "https://localhost:5173",
+  origin: "https://omar-d35h.vercel.app",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
 }));
 
