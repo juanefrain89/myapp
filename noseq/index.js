@@ -45,7 +45,7 @@ async function main(correo,codigo) {
   try {
    
     const info = await transporter.sendMail({
-      from: '"Maddison Foo Koch 👻" <razoj140@gmail.com>',
+      from: '"mava publicidad 👻" <razoj140@gmail.com>',
       to: `${correo}`,
       subject: "Hello ✔", 
       text: `${codigo}`, 
@@ -420,9 +420,9 @@ app.post('/comprobar', (req, res) => {
               con.query(actualizar, [true, correo], (err) => {
                   if (err) {
                       console.error("Error al actualizar en la base de datos:", err);
-                      return res.status(500).send('Error al actualizar en la base de datos'); // Este es el error que quieres
+                      return res.status(500).send('Error al actualizar en la base de datos'); 
                   }
-                  return res.send("Código verificado correctamente"); // Si todo va bien
+                  return res.send("Código verificado correctamente"); 
               });
           } else {
               return res.status(401).json({
