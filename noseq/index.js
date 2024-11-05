@@ -19,13 +19,10 @@ cloudinary.config({
   api_key: '411843524515185',
   api_secret: 'Y8BUj_6jzO2HXJX10Pz9BZPhdW0',
 });
-
-
-// Crear el transportador de correo
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
-  secure: true, // true for port 465, false for other ports
+  secure: true, 
   auth: {
     user: "razoj140@gmail.com", // tu correo
     pass: "pipmzycmxgjmlbqg",   // tu contraseña de aplicaciones de Google
@@ -58,13 +55,12 @@ async function main(correo,codigo) {
   }
 }
 
-// Llamar a la función para enviar el correo
 
 
 
 
 app.use(cors({
-  origin: "https://omar-d35h.vercel.app",
+  origin: " http://localhost:8081",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
 }));
 
@@ -73,8 +69,8 @@ app.use(cors({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'imagenes', // Nombre de la carpeta en Cloudinary
-    allowed_formats: ['jpg', 'png', 'jpeg'], // Formatos permitidos
+    folder: 'imagenes', 
+    allowed_formats: ['jpg', 'png', 'jpeg'],
   },
 });
 
@@ -86,7 +82,7 @@ const dbConfig = {
   host: "198.59.144.133",
   user: "mavahost_juan",
   password: "juanito18*#.",
-  database: "mavahost_omar",
+  database: "mavahost_mypp",
   acquireTimeout: 10000, 
   connectTimeout: 10000, 
   timeout: 10000        
@@ -103,7 +99,7 @@ function handleDisconnect() {
   connection.connect((err) => {
     if (err) {
       console.error("Error al conectar:", err);
-      setTimeout(handleDisconnect, 2000); // Espera antes de intentar reconectar
+      setTimeout(handleDisconnect, 2000);
     } else {
       console.log("Conectado a la base de datos.");
     }
@@ -112,7 +108,7 @@ function handleDisconnect() {
   connection.on("error", (err) => {
     if (err.code === "PROTOCOL_CONNECTION_LOST") {
       console.error("Conexión perdida, intentando reconectar...");
-      handleDisconnect(); // Reconectar automáticamente
+      handleDisconnect(); 
     } else {
       throw err;
     }
@@ -122,33 +118,12 @@ function handleDisconnect() {
 }
 
 const connection = handleDisconnect();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 app.use(mysqlConexion(mysql, dbConfig, "pool"));
 
 
 app.use('/imagenes', express.static(path.join(__dirname, 'imagenes')));
 app.get("/", (req, res) => {
-  const query = `SELECT * FROM patrullas`;
-  
+  const query = `SELECT * FROM pueblo`;
   try {
     req.getConnection((err, con) => {
       if (err) {
@@ -161,7 +136,6 @@ app.get("/", (req, res) => {
           console.error("Error al ejecutar la consulta:", err);
           return res.status(500).send("Error al ejecutar la consulta en la base de datos");
         }
-        
         if (result.length === 0) {
           console.log("No se encontraron resultados.");
           return res.status(404).send("No se encontraron resultados.");
@@ -333,6 +307,7 @@ app.post("/login", (req, res) => {
 
 app.post("/pendientespost", upload.single('imagen'), async (req, res) => {
   const body = Object.assign({}, req.body);
+console.log("entro");
 
   if (!req.file) {
     return res.status(400).send('No se ha recibido ninguna imagen.');
@@ -342,7 +317,7 @@ app.post("/pendientespost", upload.single('imagen'), async (req, res) => {
 const imagenUrl = req.file.path.match(/https:\/\/res\.cloudinary\.com\/[^\s]+/)[0];
 
 
-  const { placa, ubicacion, contacto, unidad, referencias, latitud, longitud } = req.body;
+  const { nombre, regalos, numero, ciudad, latitud, longitud} = req.body;
 console.log(req.file);
 
   try {
@@ -351,8 +326,8 @@ console.log(req.file);
    
 
 
-    const sql = 'INSERT INTO patrullas_pendientes (placa, ubicacion, contacto, unidad, referencias, imagen, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-    const values = [placa, ubicacion, contacto, unidad, referencias, imagenUrl, latitud, longitud];
+    const sql = 'INSERT INTO pueblo (nombre, regalos, telefono, ciudad, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?)';
+    const values = [nombre, regalos, numero, ciudad, latitud, longitud];
 
     req.getConnection((err, con) => {
       if (err) {
@@ -367,7 +342,6 @@ console.log(req.file);
         res.status(200).send({ message: 'Registro exitoso', id: result.insertId, imagen: imagenUrl });
       });
     });
-
   } catch (error) {
     console.error(error)
     return res.status(500).send("Error al subir la imagen" );
