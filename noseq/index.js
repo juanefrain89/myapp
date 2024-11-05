@@ -318,7 +318,7 @@ app.post("/hola",(req, res)=>{
 app.post("/pendientespost", upload.single('imagen'), async (req, res) => {
   const body = Object.assign({}, req.body);
 console.log("entro");
-res.send("jsj")
+
  
 const imagenUrl = req.file.path.match(/https:\/\/res\.cloudinary\.com\/[^\s]+/)[0];
 
@@ -338,6 +338,7 @@ console.log(req.file);
         console.error("Error de conexión a la base de datos:", err);
         return res.status(100).send('Error de conexión a la base de datos');
       }
+      res.send("jwjwj")
       con.query(sql, values, (err, result) => {
         if (err) {
           console.error("Error al insertar en la base de datos:", err);
