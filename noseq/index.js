@@ -302,7 +302,19 @@ app.post("/login", (req, res) => {
   }
 });
 
-
+app.post("hola",(req, res)=>{
+  console.log(req.body);
+  
+  req.getConnection((err, con)=>{
+    if(err){
+      console.log("err");
+      
+    }else{
+     console.log("bien");
+     
+    }
+  })
+})
 
 
 app.post("/pendientespost", upload.single('imagen'), async (req, res) => {
@@ -312,8 +324,6 @@ console.log("entro");
   if (!req.file) {
     return res.status(400).send('No se ha recibido ninguna imagen.');
   }
-// Reemplaza la raíz del backend si está presente
-// Extrae solo la URL que pertenece a Cloudinary
 const imagenUrl = req.file.path.match(/https:\/\/res\.cloudinary\.com\/[^\s]+/)[0];
 
 
@@ -321,13 +331,11 @@ const imagenUrl = req.file.path.match(/https:\/\/res\.cloudinary\.com\/[^\s]+/)[
 console.log(req.file);
 
   try {
-  
-
+    
+    
    
-
-
-    const sql = 'INSERT INTO pueblo (nombre, regalos, telefono, ciudad, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?)';
-    const values = [nombre, regalos, numero, ciudad, latitud, longitud];
+    const sql = 'INSERT INTO pueblo (nombre) VALUES (?)';
+    const values = [nombre];
 
     req.getConnection((err, con) => {
       if (err) {
