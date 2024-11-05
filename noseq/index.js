@@ -318,7 +318,7 @@ app.post("/hola",(req, res)=>{
 app.post("/pendientespost", upload.single('imagen'), async (req, res) => {
   const body = Object.assign({}, req.body);
 console.log("entro");
-
+res.send("jsj")
  
 const imagenUrl = req.file.path.match(/https:\/\/res\.cloudinary\.com\/[^\s]+/)[0];
 
