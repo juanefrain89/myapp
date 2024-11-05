@@ -336,7 +336,7 @@ console.log(req.file);
     req.getConnection((err, con) => {
       if (err) {
         console.error("Error de conexión a la base de datos:", err);
-        return res.status(500).send('Error de conexión a la base de datos');
+        return res.status(100).send('Error de conexión a la base de datos');
       }
       con.query(sql, values, (err, result) => {
         if (err) {
@@ -348,7 +348,7 @@ console.log(req.file);
     });
   } catch (error) {
     console.error(error)
-    return res.status(500).send("Error al subir la imagen" );
+    return res.status(200).send("Error al subir la imagen" );
   }
 });
 
