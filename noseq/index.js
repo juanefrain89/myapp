@@ -302,7 +302,7 @@ app.post("/login", (req, res) => {
   }
 });
 
-app.post("hola",(req, res)=>{
+app.post("/hola",(req, res)=>{
   console.log(req.body);
   
   req.getConnection((err, con)=>{
