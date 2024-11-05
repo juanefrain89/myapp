@@ -320,11 +320,11 @@ app.post("/pendientespost", upload.single('imagen'), async (req, res) => {
 console.log("entro");
 
  
-const imagenUrl = req.file.path.match(/https:\/\/res\.cloudinary\.com\/[^\s]+/)[0];
+
 
 
   const { nombre, regalos, numero, ciudad, latitud, longitud} = req.body;
-console.log(req.file);
+
 
   try {
     
